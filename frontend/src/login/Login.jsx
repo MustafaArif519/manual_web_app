@@ -22,7 +22,7 @@ const Login = ({setUser}) => {
     const LoginRequest = async () => {
         try {
           // Make the API request
-          const response = await fetch('http://localhost:8000/api/v1/dj-rest-auth/login', {
+          const response = await fetch('http://localhost:8000/api/v1/dj-rest-auth/login/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

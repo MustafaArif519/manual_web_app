@@ -6,7 +6,7 @@ class File(models.Model):
     is_file = models.BooleanField(default=False)  # Change to BooleanField
     directory = models.CharField(max_length=50)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    file = models.FileField(upload_to="files/")
+    file = models.FileField(upload_to="files/", null=True, blank = True,)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

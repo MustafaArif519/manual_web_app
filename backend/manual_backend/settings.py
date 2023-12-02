@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "allauth.account", # new
     "allauth.socialaccount", # new
     "dj_rest_auth.registration", # new
+    'corsheaders',
 
     # Local
     "accounts.apps.AccountsConfig",
@@ -62,6 +63,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'manual_backend.urls'
@@ -161,3 +163,6 @@ SITE_ID = 1 # new
 REST_AUTH = {
     'REGISTER_SERIALIZER': 'accounts.serializers.CustomRegisterSerializer'
 }
+
+
+CORS_ALLOW_ALL_ORIGINS = True
