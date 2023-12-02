@@ -32,25 +32,20 @@ useEffect(() => {
       const data = await response.json();
 
       // Filter files and dirs based on user and path attributes
-      const userFilteredFiles = data.filter((item) => item.is_file && item.author === user);
-      const userFilteredDirs = data.filter((item) => !item.is_file && item.author === user);
+      console.log(user);
+      const userFilteredFiles = data.filter((item) => item.is_file && item.author === user && item.directory === path);
+      const userFilteredDirs = data.filter((item) => !item.is_file && item.author === user && item.directory === path);
 
-      const pathFilteredFiles = data.filter((item) => item.is_file && item.directory === path);
-      const pathFilteredDirs = data.filter((item) => !item.is_file && item.directory === path);
 
-      // Combine user and path filtered lists
-      const filesList = userFilteredFiles.concat(pathFilteredFiles);
-      const dirsList = userFilteredDirs.concat(pathFilteredDirs);
-
-      setFiles(filesList);
-      setDirs(dirsList);
+      setFiles(userFilteredFiles);
+      setDirs(userFilteredDirs);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
   fetchData();
-}, [apiUrl, user, path]);
+}, [ user, path]);
 
   return (
 <>

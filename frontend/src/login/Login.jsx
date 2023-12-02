@@ -33,7 +33,8 @@ const Login = ({setUser}) => {
     
         if (userWithMatchingUsername) {
           // If a user with matching username is found, store the 'id' in the state
-          const idFromResponse = userWithMatchingUsername.id;
+          const idFromResponse = userWithMatchingUsername.pk;
+          console.log(idFromResponse);
           setUser(idFromResponse);
           localStorage.setItem('user', idFromResponse);
         } else {
