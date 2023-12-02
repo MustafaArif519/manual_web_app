@@ -1,20 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Input, Grid, Text, Button } from '@geist-ui/core'
+import { FileText } from '@geist-ui/icons'
 
-class File extends React.Component {
-  handleFileChange = (event) => {
-    const selectedFile = event.target.files[0];
-    // Do something with the selected file, e.g., upload it or process it
-    console.log('Selected File:', selectedFile);
+
+
+
+const File = ({ file }) => {
+  const [data, setData] = useState(file);
+
+  const handleDownload = () => {
+    // Assuming the file attribute contains the download link or data
+    const fileDownloadLink = data.file;
+
+    // You can use the link to initiate the download
+    window.open(fileDownloadLink, '_blank');
   };
 
-  render() {
-    return (
-      <div>
-        <h2>File Component</h2>
-        <input type="file" onChange={this.handleFileChange} />
-      </div>
-    );
-  }
-}
+  return (
+    <Grid>
+      <Button type="secondary" iconRight={<FileText />} auto onClick={handleDownload} />
+      <Text>{data.title}</Text>
+    </Grid>
+  );
+};
 
 export default File;

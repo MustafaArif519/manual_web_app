@@ -1,20 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Input, Grid, Text, Spacer, Button } from '@geist-ui/core'
+import { Folder } from '@geist-ui/icons'
 
-class Dir extends React.Component {
-  handleDirChange = (event) => {
-    const selectedDir = event.target.Dirs[0];
-    // Do something with the selected Dir, e.g., upload it or process it
-    console.log('Selected Dir:', selectedDir);
+
+
+const Dir = ({ dir, setPath }) => {
+  const [data, setData] = useState(dir);
+
+  const handleButtonClick = () => {
+    // Concatenate the current path with the directory name
+    setPath((prevPath) => prevPath + '/' + data.title);
   };
 
-  render() {
-    return (
-      <div>
-        <h2>Dir Component</h2>
-        <input type="Dir" onChange={this.handleDirChange} />
-      </div>
-    );
-  }
-}
+  return (
+    <>
+      <Grid direction="column" alignItems="center">
+        <Button type="secondary" iconRight={<Folder />} auto onClick={handleButtonClick} />
+        <Text>{data.title}</Text>
+      </Grid>
+    </>
+  );
+};
 
 export default Dir;

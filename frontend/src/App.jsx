@@ -13,15 +13,19 @@ function App() {
 
   return (
     <>
-    <Grid>
+    <Grid.Container>
+    <Grid >
     <Text h1>Manual Drive</Text> {user != null && <Button auto type="error">Logout</Button>}
     <Divider />
     <Spacer h={1}/>
     {user === null ? <Login setUser = {setUser} /> :
-        <Files /> 
+
+        <Files user={user} /> 
+
         }
+
     </Grid>
-     
+    </Grid.Container>
     </>
   )
 }

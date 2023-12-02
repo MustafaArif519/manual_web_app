@@ -18,6 +18,31 @@ const Login = ({setUser}) => {
         setPassword(event.target.value);
     };
 
+    const store_id = async (username) => {
+      try {
+        const response = await fetch('http://localhost:8000/api/v1/users');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+    
+        const responseData = await response.json();
+        
+        // Assuming the API response is an array of user objects
+        const userWithMatchingUsername = responseData.find(user => user.username === username);
+    
+        if (userWithMatchingUsername) {
+          // If a user with matching username is found, store the 'id' in the state
+          const idFromResponse = userWithMatchingUsername.id;
+          setUser(idFromResponse);
+        } else {
+          console.error('User with the provided username not found');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    
+
 
     const LoginRequest = async () => {
         try {
@@ -37,7 +62,8 @@ const Login = ({setUser}) => {
             // Successful login
             const result = await response.json();
             console.log('Login successful:', result);
-            setUser(username);
+            store_id();
+            
             // You may want to handle the successful login, such as redirecting the user
           } else {
             // Handle errors for non-successful responses
