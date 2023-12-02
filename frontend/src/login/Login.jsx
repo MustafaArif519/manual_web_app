@@ -18,7 +18,7 @@ const Login = ({setUser}) => {
         setPassword(event.target.value);
     };
 
-    const store_id = async (username) => {
+    const store_id = async () => {
       try {
         const response = await fetch('http://localhost:8000/api/v1/users');
         if (!response.ok) {
@@ -28,12 +28,14 @@ const Login = ({setUser}) => {
         const responseData = await response.json();
         
         // Assuming the API response is an array of user objects
+        console.log(username);
         const userWithMatchingUsername = responseData.find(user => user.username === username);
     
         if (userWithMatchingUsername) {
           // If a user with matching username is found, store the 'id' in the state
           const idFromResponse = userWithMatchingUsername.id;
           setUser(idFromResponse);
+          localStorage.setItem('user', idFromResponse);
         } else {
           console.error('User with the provided username not found');
         }
