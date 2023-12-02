@@ -37,9 +37,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "django.contrib.sites",
+
+    # 3rd party
+    "rest_framework",
+    "rest_framework.authtoken",
+    "dj_rest_auth",
+    "allauth", # new
+    "allauth.account", # new
+    "allauth.socialaccount", # new
+    "dj_rest_auth.registration", # new
 
     # Local
     "accounts.apps.AccountsConfig",
+    "files.apps.FilesConfig",
 ]
 
 MIDDLEWARE = [
@@ -50,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'manual_backend.urls'
@@ -65,6 +77,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                "django.template.context_processors.request", # new
             ],
         },
     },
@@ -127,3 +140,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 AUTH_USER_MODEL = "accounts.CustomUser"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+REST_FRAMEWORK = { # new
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+        ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [ # new
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+        ],
+
+}
+
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend" # new
+SITE_ID = 1 # new
+
+REST_AUTH = {
+    'REGISTER_SERIALIZER': 'accounts.serializers.CustomRegisterSerializer'
+}
