@@ -49,38 +49,42 @@ const Login = ({setUser, setToekn, setMode}) => {
 
 
     const LoginRequest = async () => {
-        try {
-          // Make the API request
-          const response = await fetch('http://localhost:8000/api/v1/dj-rest-auth/login/', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              username: username,
-              password: password,
-            }),
-          });
+      try {
+        // Check if username contains "@" symbol
+        const isEmailFormat = username.includes('@');
+        const requestBody = isEmailFormat
+          ? { email: username, password: password }
+          : { username: username, password: password };
     
-          if (response.ok) {
-            // Successful login
-            const result = await response.json();
-            console.log('Login successful:', result);
-            store_id();
-            setToekn(result.key);
-
-            
-            // localStorage.setItem('token', result.key);
-            // You may want to handle the successful login, such as redirecting the user
-          } else {
-            // Handle errors for non-successful responses
-            setError('Invalid username or password');
-          }
-        } catch (error) {
-          // Handle network errors or other exceptions
-          setError('Error logging in');
+        // Make the API request
+        console.log(requestBody);
+        const response = await fetch('http://localhost:8000/api/v1/dj-rest-auth/login/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        });
+    
+        if (response.ok) {
+          // Successful login
+          const result = await response.json();
+          console.log('Login successful:', result);
+          store_id();
+          setToekn(result.key);
+    
+          // localStorage.setItem('token', result.key);
+          // You may want to handle the successful login, such as redirecting the user
+        } else {
+          // Handle errors for non-successful responses
+          setError('Invalid username or password');
         }
-      };
+      } catch (error) {
+        // Handle network errors or other exceptions
+        setError('Error logging in');
+      }
+    };
+    
   
 
     const handleLogin = () => {
@@ -98,7 +102,7 @@ const Login = ({setUser, setToekn, setMode}) => {
 
             <div>
                 <Input
-                    label="username/email"
+                    label="username"
                     placeholder="ex: johDoe260"
                     id="username"
                     value={username}
