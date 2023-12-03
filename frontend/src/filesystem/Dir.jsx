@@ -14,10 +14,10 @@ const Dir = ({ dir, setPath }) => {
 
   return (
     <>
-      <Grid direction="column" alignItems="center">
+      <>
         <Button type="secondary" iconRight={<Folder />} auto onClick={handleButtonClick} />
         <Text>{data.title}</Text>
-      </Grid>
+      </>
     </>
   );
 };

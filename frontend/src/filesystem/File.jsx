@@ -17,10 +17,10 @@ const File = ({ file }) => {
   };
 
   return (
-    <Grid>
+    <>
       <Button type="secondary" iconRight={<FileText />} auto onClick={handleDownload} />
       <Text>{data.title}</Text>
-    </Grid>
+    </>
   );
 };
 

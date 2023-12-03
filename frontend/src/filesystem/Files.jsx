@@ -128,7 +128,9 @@ useEffect(() => {
     <Spacer w={2} />
     <Button type="success"  onClick={()=>viewHandler(true, "dir")} iconRight={<FolderPlus />} auto />
     <Spacer w={2} />
-    <Button type="error"  onClick={handleDeleteMode} iconRight={<Trash2  />} auto />
+{!deleteMode ?   <Button type="error"  onClick={handleDeleteMode} iconRight={<Trash2  />} auto />
+:
+    <Button type="warning"  onClick={handleDeleteMode} iconRight={<Trash2  />} auto />}
   </Grid.Container>
   <Spacer h={2} />
     <Input label="Search" placeholder="Ex: furniture" />
@@ -150,11 +152,11 @@ useEffect(() => {
 
 {deleteDirs.length !== 0 && deleteMode &&
       deleteDirs.map((dir) => (
-        <Grid.Container xs={24} md={12} lg={8} key={dir.id}>
+        <Grid xs={24} md={12} lg={8} key={dir.id}>
         <Button type="error" iconRight={<Folder />} auto 
         onClick={()=>handleDeleteView(dir.id, dir.title)} />
         <Text>{dir.title}</Text>
-        </Grid.Container>
+        </Grid>
       ))}
     {deleteFiles.length !== 0 && deleteMode &&
       deleteFiles.map((file) => (
