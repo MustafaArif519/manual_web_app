@@ -6,11 +6,15 @@ import { Text, Grid, Divider, Spacer, Button } from '@geist-ui/core'
 import Login from './login/Login'
 import Files from './filesystem/Files'
 import Logout from './login/Logout'
+import Register from './login/Register'
 
 
 function App() {
   const [user, setUser] = useState(localStorage.getItem('user'));
   const [token, setToken] = useState(localStorage.getItem('token'));
+
+  const [mode, setMode] = useState("login");
+
   console.log(localStorage.getItem('user'));
   console.log(user);
   const handleLogout = async () => {
@@ -46,12 +50,16 @@ function App() {
     <Grid.Container>
       <Grid>
         <Text h1>Manual Drive</Text>
-        {user !== null && <Logout onLogout={handleLogout} />
+        {user !== null  && <Logout onLogout={handleLogout}  />
+        }
+        {user === null && mode === "login" &&
+        <Login setUser={setUser} setToken = {setToken} setMode={setMode}/> }
+        {user === null && mode === "register" && <Register setMode={setMode} />
         }
         <Divider />
         <Spacer h={1} />
-        {user === null ? <Login setUser={setUser} setToken = {setToken}/> : 
-        <Files user={user} token={token}/>}
+        
+        {user !== null && <Files user={user} token={token}/>}
       </Grid>
     </Grid.Container>
   );

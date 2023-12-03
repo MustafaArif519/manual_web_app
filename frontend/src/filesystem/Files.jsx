@@ -26,6 +26,7 @@ const Files = ({ user, token }) => {
 
   const [deleteMode, setDeleteMode] = useState(false);
   const [viewDelete, setViewDelete] = useState(false);
+
   const [deleteId, setDeleteId] = useState(null);
   const [deleteName, setDeleteName] = useState(null);
 
@@ -37,7 +38,35 @@ const Files = ({ user, token }) => {
     setType(typer);
   };
 
+  const viewDeleteHandler = (bool, id, name) => {
+    
+    setDeleteName(name);
+    setDeleteId(id);
+    setView(bool);
 
+  };
+
+  const handleDelete = () => {
+    fetch(`http://localhost:8000/api/v1/files${deleteId}/`, {
+      method: 'DELETE',
+      // No headers are provdeleteIded in this version
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to delete file');
+        }
+        // No need to parse response since DELETE requests don't have a response body
+        console.log('File deleted successfully');
+        // Assuming setViewDelete is the correct function to update view state
+        setViewDelete(false);
+        setView(false);
+      })
+      .catch((error) => {
+        console.error('Error deleting file:', error.message);
+        setViewDelete(false);
+        setView(false);
+      });
+  };
 
   const handleButtonClick = () => {
     setPath((prevPath) => {
@@ -47,16 +76,7 @@ const Files = ({ user, token }) => {
     });
   };
 
-  const handleDeleteMode = () => {
-    setDeleteMode(!deleteMode);
-  };
 
-  const handleDeleteView = (id, name) => {
-    setViewDelete(!viewDelete);
-    setDeleteId(id);
-    setDeleteName(name);
-    console.log(name);
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -109,6 +129,7 @@ const Files = ({ user, token }) => {
         setDeleteFiles(userFilteredFiles);
 
         console.log(userFilteredFiles);
+        console.error("Updated the data");
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -117,25 +138,33 @@ const Files = ({ user, token }) => {
     fetchData();
   }, [user, path, view, viewDelete, searchInput]);
 
-
+console.log(deleteMode);
 
   return (
     <>
       <Grid.Container justify="center" alignItems="center">
 
 
-        {type === "file" && <FileUpload setView={setView}
+        {type === "file" && !deleteMode && <FileUpload setView={setView}
           viewHandler={viewHandler} view={view}
           token={token} path={path} user={user} />}
 
-        {type === "dir" && <DirUpload setView={setView}
+        {type === "dir" && !deleteMode && <DirUpload setView={setView}
           viewHandler={viewHandler} view={view}
           token={token} path={path} user={user} />}
-        {viewDelete &&
-          <DeleteModal user={user} token={token} path={path}
-            deleteMode={deleteMode} viewDelete={viewDelete} setViewDelete={setViewDelete}
-            id={deleteId} name={deleteName}
-          />
+        {view && deleteMode && 
+              <Modal visible={view} onClose={() => setView(false)}>
+              <Modal.Title>WARNING!</Modal.Title>
+              <Modal.Subtitle>You are about to delete {deleteName}!</Modal.Subtitle>
+              <Modal.Content>
+        This action is NOT reversible
+                    </Modal.Content>
+        
+              <Modal.Action passive onClick={() => setView(false)}>
+                Cancel
+              </Modal.Action>
+              <Modal.Action onClick={handleDelete}>DELETE {deleteName}</Modal.Action>
+            </Modal>
         }
 
 
@@ -156,9 +185,9 @@ const Files = ({ user, token }) => {
         <Spacer w={2} />
         <Button type="success" onClick={() => viewHandler(true, "dir")} iconRight={<FolderPlus />} auto />
         <Spacer w={2} />
-        {!deleteMode ? <Button type="error" onClick={handleDeleteMode} iconRight={<Trash2 />} auto />
-          :
-          <Button type="warning" onClick={handleDeleteMode} iconRight={<Trash2 />} auto />}
+        {!deleteMode && <Button type="error" onClick={()=>setDeleteMode(true)} iconRight={<Trash2 />} auto /> }
+          
+         {deleteMode &&  <Button type="warning" onClick={()=>setDeleteMode(false)} iconRight={<Trash2 />} auto />}
       </Grid.Container>
       <Spacer h={2} />
       <Input label="Search" placeholder="Ex: furniture"
@@ -166,16 +195,16 @@ const Files = ({ user, token }) => {
       />
       <Spacer h={5} />
 
-      <Grid.Container justify="center">
+      <Grid.Container justify="center"  direction="column">
         {dirs.length !== 0 && !deleteMode &&
           dirs.map((dir) => (
-            <Grid xs={24} md={12} lg={8} key={dir.id}>
+            <Grid xs={24} key={dir.id}>
               <Dir dir={dir} setPath={setPath} />
             </Grid>
           ))}
         {files.length !== 0 && !deleteMode &&
           files.map((file) => (
-            <Grid xs={24} md={12} lg={8} key={file.id}>
+            <Grid xs={24}  key={file.id}>
               <File file={file} />
             </Grid>
           ))}
@@ -184,7 +213,7 @@ const Files = ({ user, token }) => {
           deleteDirs.map((dir) => (
             <Grid xs={24} key={dir.id}>
               <Button type="error" iconRight={<Folder />} auto
-                onClick={() => handleDeleteView(dir.id, dir.title)} />
+                onClick={() => viewDeleteHandler(true, dir.id, dir.title)} />
               <Text>{dir.title}</Text>
             </Grid>
           ))}
@@ -192,7 +221,7 @@ const Files = ({ user, token }) => {
           deleteFiles.map((file) => (
             <Grid.Container xs={24} key={file.id}>
               <Button type="error" iconRight={<FileText />} auto
-                onClick={() => handleDeleteView(file.id, file.title)} />
+                onClick={() => viewDeleteHandler(true, file.id, file.title)} />
               <Text>{file.title}</Text>
             </Grid.Container>
           ))}

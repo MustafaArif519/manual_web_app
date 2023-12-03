@@ -46,7 +46,7 @@ const DirUpload = ({ setView, view, viewHandler, token, path, user }) => {
 
     return (
 
-        <Modal visible={view} onClose={viewHandler}>
+        <Modal visible={view} onClose={() => setView(false)}>
             {/* <div>
                 <input type="file" onChange={handleFileChange} />
                 <button onClick={handleUpload}>Upload</button>

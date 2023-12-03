@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Input, Grid, Button, Spacer } from '@geist-ui/core'
 
-const Login = ({setUser, setToekn}) => {
+const Login = ({setUser, setToekn, setMode}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -125,7 +125,7 @@ const Login = ({setUser, setToekn}) => {
                 <Spacer w={2}/>
                 <Button
                     auto type="success"
-                    onClick={handleLogin}>
+                    onClick={()=> setMode("register")}>
                     Register
                 </Button>
             </Grid.Container>
