@@ -30,6 +30,8 @@ const Files = ({user, token}) => {
   const [deleteName, setDeleteName] = useState(null);
 
 
+  const [searchInput, setSearchInput] = useState("");
+
   const viewHandler = (bool, typer) => {
     setView(bool);
     setType(typer);
@@ -65,30 +67,49 @@ useEffect(() => {
       }
       const data = await response.json();
 
-      console.log('Original data:', data);
-      console.log('User:', user);
-      console.log('Path:', path);
+      let userFilteredFiles;
+      let userFilteredDirs;
 
-      // Filter files and dirs based on user and path attributes
-      let userFilteredFiles = data.filter((item) => item.is_file && item.author == user && item.directory == path);
-      let userFilteredDirs = data.filter((item) => !item.is_file && item.author == user && item.directory == path);
+      if (searchInput == "") {
+        // If search input is blank, display everything
+        userFilteredFiles = data.filter(
+          (item) => item.is_file && item.author === user && item.directory === path
+        );
+        userFilteredDirs = data.filter(
+          (item) => !item.is_file && item.author === user && item.directory === path
+        );
+      } else {
+        // Filter based on search input
+        userFilteredFiles = data.filter(
+          (item) =>
+            item.is_file &&
+            item.author === user &&
+            item.directory === path &&
+            item.title.toLowerCase().includes(searchInput.toLowerCase())
+        );
 
-      console.log('Filtered files:', userFilteredFiles);
-      console.log('Filtered dirs:', userFilteredDirs);
+        userFilteredDirs = data.filter(
+          (item) =>
+            !item.is_file &&
+            item.author === user &&
+            item.directory === path &&
+            item.title.toLowerCase().includes(searchInput.toLowerCase())
+        );
+      }
 
       setFiles(userFilteredFiles);
       setDirs(userFilteredDirs);
 
       setDeleteDirs(userFilteredDirs);
       setDeleteFiles(userFilteredFiles);
-
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
   fetchData();
-}, [user, path, view, viewDelete]);
+}, [user, path, view, viewDelete, searchInput]);
+
 
 
   return (
@@ -133,7 +154,9 @@ useEffect(() => {
     <Button type="warning"  onClick={handleDeleteMode} iconRight={<Trash2  />} auto />}
   </Grid.Container>
   <Spacer h={2} />
-    <Input label="Search" placeholder="Ex: furniture" />
+    <Input label="Search" placeholder="Ex: furniture"
+     onChange={(e) => setSearchInput(e.target.value)}
+      />
   <Spacer h={5} />
 
   <Grid.Container  justify="center">
