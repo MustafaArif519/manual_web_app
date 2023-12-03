@@ -1,17 +1,29 @@
 import { useState, useEffect } from 'react'
-import { Text, Grid, Button, Spacer } from '@geist-ui/core'
+import { Text, Grid, Button, Spacer, Modal, Input } from '@geist-ui/core'
 import File from './File';
 import Dir from "./Dir"
-import { FilePlus, FolderPlus, ArrowLeftCircle } from '@geist-ui/icons'
+import FileUpload from './FileUpload';
+import DirUpload from './DirUpload';
+import { FilePlus, FolderPlus, ArrowLeftCircle, Trash2  } from '@geist-ui/icons'
 
 
 
 
-const Files = ({user}) => {
+const Files = ({user, token}) => {
   const [path, setPath] = useState('root');
   const [dirs, setDirs] = useState([]);
   const [files, setFiles] = useState([]);
   const apiUrl = 'http://localhost:8000/api/v1/files';
+  
+  const [view, setView] = useState(false);
+  const [type, setType] = useState(null);
+
+
+  const viewHandler = (bool, typer) => {
+    setView(bool);
+    setType(typer);
+  };
+
 
 
 const handleButtonClick = () => {
@@ -31,11 +43,16 @@ useEffect(() => {
       }
       const data = await response.json();
 
-      // Filter files and dirs based on user and path attributes
-      console.log(user);
-      const userFilteredFiles = data.filter((item) => item.is_file && item.author === user && item.directory === path);
-      const userFilteredDirs = data.filter((item) => !item.is_file && item.author === user && item.directory === path);
+      console.log('Original data:', data);
+      console.log('User:', user);
+      console.log('Path:', path);
 
+      // Filter files and dirs based on user and path attributes
+      let userFilteredFiles = data.filter((item) => item.is_file && item.author == user && item.directory == path);
+      let userFilteredDirs = data.filter((item) => !item.is_file && item.author == user && item.directory == path);
+
+      console.log('Filtered files:', userFilteredFiles);
+      console.log('Filtered dirs:', userFilteredDirs);
 
       setFiles(userFilteredFiles);
       setDirs(userFilteredDirs);
@@ -45,11 +62,22 @@ useEffect(() => {
   };
 
   fetchData();
-}, [ user, path]);
+}, [user, path, view]);
+
 
   return (
 <>
   <Grid.Container justify="center" alignItems="center">
+
+
+  { type === "file" && <FileUpload setView={setView} 
+                        viewHandler = {viewHandler} view = {view} 
+                        token={token} path={path} user={user}/>}
+
+{ type === "dir" && <DirUpload setView={setView} 
+    viewHandler = {viewHandler} view = {view} 
+    token={token} path={path} user={user}/>}
+  
 
     <Text>{path}</Text>
   </Grid.Container>
@@ -64,14 +92,17 @@ useEffect(() => {
       </Grid>
     )}
     <Spacer w={2} />
-    <Button type="success" iconRight={<FilePlus />} auto />
+    <Button type="success" onClick={()=>viewHandler(true, "file")} iconRight={<FilePlus />} auto />
     <Spacer w={2} />
-    <Button type="success" iconRight={<FolderPlus />} auto />
+    <Button type="success"  onClick={()=>viewHandler(true, "dir")} iconRight={<FolderPlus />} auto />
+    <Spacer w={2} />
+    <Button type="error"  onClick={()=>viewHandler(true, "dir")} iconRight={<Trash2  />} auto />
   </Grid.Container>
-
+  <Spacer h={2} />
+    <Input label="Search" placeholder="Ex: furniture" />
   <Spacer h={5} />
 
-  <Grid.Container gap={2} justify="center">
+  <Grid.Container  justify="center">
     {dirs.length !== 0 &&
       dirs.map((dir) => (
         <Grid xs={24} md={12} lg={8} key={dir.id}>

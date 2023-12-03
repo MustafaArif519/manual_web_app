@@ -10,7 +10,9 @@ import Logout from './login/Logout'
 
 function App() {
   const [user, setUser] = useState(localStorage.getItem('user'));
-
+  const [token, setToken] = useState(localStorage.getItem('token'));
+  console.log(localStorage.getItem('user'));
+  console.log(user);
   const handleLogout = async () => {
     try {
       // Add your logout API endpoint URL here
@@ -32,7 +34,9 @@ function App() {
 
       // Clear user data from local storage and update state
       localStorage.removeItem('user');
+      localStorage.removeItem('token');
       setUser(null);
+      setToken(null);
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -46,7 +50,8 @@ function App() {
         }
         <Divider />
         <Spacer h={1} />
-        {user === null ? <Login setUser={setUser} /> : <Files user={user} />}
+        {user === null ? <Login setUser={setUser} setToken = {setToken}/> : 
+        <Files user={user} token={token}/>}
       </Grid>
     </Grid.Container>
   );

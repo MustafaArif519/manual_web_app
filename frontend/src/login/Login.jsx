@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Input, Grid, Button, Spacer } from '@geist-ui/core'
 
-const Login = ({setUser}) => {
+const Login = ({setUser, setToekn}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -36,6 +36,7 @@ const Login = ({setUser}) => {
           const idFromResponse = userWithMatchingUsername.pk;
           console.log(idFromResponse);
           setUser(idFromResponse);
+          
           localStorage.setItem('user', idFromResponse);
         } else {
           console.error('User with the provided username not found');
@@ -66,7 +67,10 @@ const Login = ({setUser}) => {
             const result = await response.json();
             console.log('Login successful:', result);
             store_id();
+            setToekn(result.key);
+
             
+            // localStorage.setItem('token', result.key);
             // You may want to handle the successful login, such as redirecting the user
           } else {
             // Handle errors for non-successful responses
